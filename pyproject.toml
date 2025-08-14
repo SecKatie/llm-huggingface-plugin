@@ -1,25 +1,26 @@
 [project]
-name = "llm-gemini"
-version = "0.24"
-description = "LLM plugin to access Google's Gemini family of models"
+name = "llm-huggingface-plugin"
+version = "0.1"
+description = "LLM plugin to access Hugging Face models"
 readme = "README.md"
-authors = [{name = "Simon Willison"}]
+authors = [{name = "Katie Mulliken"}]
 license = "Apache-2.0"
 classifiers = []
 dependencies = [
-    "llm>=0.26",
+    "llm>=0.27.1",
     "httpx",
-    "ijson"
+    "ijson",
+    "huggingface-hub[inference]>=0.34.4",
 ]
 
 [project.urls]
-Homepage = "https://github.com/simonw/llm-gemini"
-Changelog = "https://github.com/simonw/llm-gemini/releases"
-Issues = "https://github.com/simonw/llm-gemini/issues"
-CI = "https://github.com/simonw/llm-gemini/actions"
+Homepage = "https://github.com/SecKatie/llm-huggingface"
+Changelog = "https://github.com/SecKatie/llm-huggingface/releases"
+Issues = "https://github.com/SecKatie/llm-huggingface/issues"
+CI = "https://github.com/SecKatie/llm-huggingface/actions"
 
 [project.entry-points.llm]
-gemini = "llm_gemini"
+huggingface = "llm_huggingface_plugin"
 
 [project.optional-dependencies]
 test = ["pytest", "pytest-recording", "pytest-asyncio", "nest-asyncio", "cogapp"]
@@ -27,3 +28,11 @@ test = ["pytest", "pytest-recording", "pytest-asyncio", "nest-asyncio", "cogapp"
 [tool.pytest.ini_options]
 asyncio_mode = "strict"
 asyncio_default_fixture_loop_scope = "function"
+
+[dependency-groups]
+dev = [
+    "mypy>=1.17.1",
+    "nest-asyncio>=1.6.0",
+    "pytest>=8.4.1",
+    "pytest-asyncio>=1.1.0",
+]

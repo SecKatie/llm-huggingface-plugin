@@ -1,284 +1,298 @@
-# llm-gemini
+# llm-huggingface
 
-[![PyPI](https://img.shields.io/pypi/v/llm-gemini.svg)](https://pypi.org/project/llm-gemini/)
-[![Changelog](https://img.shields.io/github/v/release/simonw/llm-gemini?include_prereleases&label=changelog)](https://github.com/simonw/llm-gemini/releases)
-[![Tests](https://github.com/simonw/llm-gemini/workflows/Test/badge.svg)](https://github.com/simonw/llm-gemini/actions?query=workflow%3ATest)
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/simonw/llm-gemini/blob/main/LICENSE)
+[![PyPI](https://img.shields.io/pypi/v/llm-huggingface.svg)](https://pypi.org/project/llm-huggingface/)
+[![Changelog](https://img.shields.io/github/v/release/SecKatie/llm-huggingface?include_prereleases&label=changelog)](https://github.com/SecKatie/llm-huggingface/releases)
+[![Tests](https://github.com/SecKatie/llm-huggingface/workflows/Test/badge.svg)](https://github.com/SecKatie/llm-huggingface/actions?query=workflow%3ATest)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/SecKatie/llm-huggingface/blob/main/LICENSE)
 
-API access to Google's Gemini models
+Access Hugging Face models via the Inference API
 
 ## Installation
 
 Install this plugin in the same environment as [LLM](https://llm.datasette.io/).
 ```bash
-llm install llm-gemini
+llm install llm-huggingface
 ```
-## Usage
 
-Configure the model by setting a key called "gemini" to your [API key](https://aistudio.google.com/app/apikey):
+## Configuration
+
+Configure the plugin by setting your [Hugging Face API token](https://huggingface.co/settings/tokens):
 ```bash
-llm keys set gemini
+llm keys set huggingface
 ```
 ```
 <paste key here>
 ```
-You can also set the API key by assigning it to the environment variable `LLM_GEMINI_KEY`.
+You can also set the API key by assigning it to the environment variable `HUGGINGFACE_TOKEN`.
 
-Now run the model using `-m gemini-2.0-flash`, for example:
+## Usage
 
-```bash
-llm -m gemini-2.0-flash "A short joke about a pelican and a walrus"
-```
-
-> A pelican and a walrus are sitting at a bar. The pelican orders a fishbowl cocktail, and the walrus orders a plate of clams. The bartender asks, "So, what brings you two together?"
->
-> The walrus sighs and says, "It's a long story. Let's just say we met through a mutual friend... of the fin."
-
-You can set the [default model](https://llm.datasette.io/en/stable/setup.html#setting-a-custom-default-model) to avoid the extra `-m` option:
+The plugin automatically discovers and registers all available text-generation and image-text-to-text (multimodal) models from Hugging Face. Run a model using the `hf/` prefix:
 
 ```bash
-llm models default gemini-2.0-flash
-llm "A joke about a pelican and a walrus"
+llm -m hf/meta-llama/Llama-3.2-3B-Instruct "Write a haiku about coding"
 ```
 
-## Available models
+You can list all available Hugging Face models:
+```bash
+llm models -q hf/
+```
 
-<!-- [[[cog
-import cog
-from llm import cli
-from click.testing import CliRunner
-runner = CliRunner()
-result = runner.invoke(cli.cli, ["models", "-q", "gemini/"])
-lines = reversed(result.output.strip().split("\n"))
-to_output = []
-NOTES = {
-    "gemini/gemini-2.5-pro": "Gemini 2.5 Pro",
-    "gemini/gemini-2.5-flash": "Gemini 2.5 Flash",
-    "gemini/gemini-2.5-flash-lite": "Gemini 2.5 Flash Lite",
-    "gemini/gemini-2.5-flash-preview-05-20": "Gemini 2.5 Flash preview (priced differently from 2.5 Flash)",
-    "gemini/gemini-2.0-flash-thinking-exp-01-21": "Experimental \"thinking\" model from January 2025",
-    "gemini/gemini-1.5-flash-8b-latest": "The least expensive model",
-}
-for line in lines:
-    model_id, rest = line.split(None, 2)[1:]
-    note = NOTES.get(model_id, "")
-    to_output.append(
-        "- `{}`{}".format(
-            model_id,
-            ': {}'.format(note) if note else ""
-        )
-    )
-cog.out("\n".join(to_output))
-]]] -->
-- `gemini/gemini-2.5-flash-lite`: Gemini 2.5 Flash Lite
-- `gemini/gemini-2.5-pro`: Gemini 2.5 Pro
-- `gemini/gemini-2.5-flash`: Gemini 2.5 Flash
-- `gemini/gemini-2.5-pro-preview-06-05`
-- `gemini/gemini-2.5-flash-preview-05-20`: Gemini 2.5 Flash preview (priced differently from 2.5 Flash)
-- `gemini/gemini-2.5-pro-preview-05-06`
-- `gemini/gemini-2.5-flash-preview-04-17`
-- `gemini/gemini-2.5-pro-preview-03-25`
-- `gemini/gemini-2.5-pro-exp-03-25`
-- `gemini/gemini-2.0-flash-lite`
-- `gemini/gemini-2.0-pro-exp-02-05`
-- `gemini/gemini-2.0-flash`
-- `gemini/gemini-2.0-flash-thinking-exp-01-21`: Experimental "thinking" model from January 2025
-- `gemini/gemini-2.0-flash-thinking-exp-1219`
-- `gemini/gemma-3n-e4b-it`
-- `gemini/gemma-3-27b-it`
-- `gemini/gemma-3-12b-it`
-- `gemini/gemma-3-4b-it`
-- `gemini/gemma-3-1b-it`
-- `gemini/learnlm-1.5-pro-experimental`
-- `gemini/gemini-2.0-flash-exp`
-- `gemini/gemini-exp-1206`
-- `gemini/gemini-exp-1121`
-- `gemini/gemini-exp-1114`
-- `gemini/gemini-1.5-flash-8b-001`
-- `gemini/gemini-1.5-flash-8b-latest`: The least expensive model
-- `gemini/gemini-1.5-flash-002`
-- `gemini/gemini-1.5-pro-002`
-- `gemini/gemini-1.5-flash-001`
-- `gemini/gemini-1.5-pro-001`
-- `gemini/gemini-1.5-flash-latest`
-- `gemini/gemini-1.5-pro-latest`
-- `gemini/gemini-pro`
-<!-- [[[end]]] -->
+Set a default model to avoid the `-m` option:
+```bash
+llm models default hf/mistralai/Mistral-7B-Instruct-v0.3
+llm "Explain quantum computing in simple terms"
+```
 
-All of these models have aliases that omit the `gemini/` prefix, for example:
+## Features
+
+### Streaming Responses
+
+The plugin supports streaming for real-time output:
+```bash
+llm -m hf/meta-llama/Llama-3.2-3B-Instruct "Tell me a story" --stream
+```
+
+### JSON Schema Output
+
+Force structured JSON output using schemas:
+```bash
+llm -m hf/meta-llama/Llama-3.2-3B-Instruct \
+  --schema '{"type": "object", "properties": {"name": {"type": "string"}, "age": {"type": "integer"}}}' \
+  "Generate a person's profile"
+```
+
+Or use the simpler DSL format:
+```bash
+llm -m hf/meta-llama/Llama-3.2-3B-Instruct \
+  --schema 'name: str, age: int, hobbies: list[str]' \
+  "Generate a person's profile with hobbies"
+```
+
+**Note:** JSON schema support varies by model. Some models may not fully support structured output or may produce inconsistent results. Models specifically fine-tuned for instruction following and structured output generation tend to perform better with schemas.
+
+### Function Calling / Tools
+
+The plugin supports function calling for models that have this capability:
+```bash
+llm -m hf/meta-llama/Llama-3.2-3B-Instruct \
+  --tool calculate 'def calculate(expression: str) -> float: """Evaluate a mathematical expression"""' \
+  "What is 15% of 240?"
+```
+
+### Generation Parameters
+
+Control generation with various parameters:
+
+- **Temperature** (0.0-2.0): Controls randomness
+  ```bash
+  llm -m hf/meta-llama/Llama-3.2-3B-Instruct -o temperature 0.7 "Write creatively"
+  ```
+
+- **Top-p** (0.0-1.0): Nucleus sampling threshold  
+  ```bash
+  llm -m hf/meta-llama/Llama-3.2-3B-Instruct -o top_p 0.9 "Generate text"
+  ```
+
+- **Max tokens**: Limit response length
+  ```bash
+  llm -m hf/meta-llama/Llama-3.2-3B-Instruct -o max_tokens 100 "Explain AI"
+  ```
+
+- **Stop sequences**: Halt generation at specific strings
+  ```bash
+  llm -m hf/meta-llama/Llama-3.2-3B-Instruct -o stop '[".", "!"]' "Generate until punctuation"
+  ```
+
+### Multimodal Support
+
+The plugin supports image attachments for vision models that support the `image-text-to-text` task:
 
 ```bash
-llm -m gemini-1.5-flash-8b-latest --schema 'name,age int,bio' 'invent a dog'
+# Analyze an image
+llm -m hf/meta-llama/Llama-3.2-11B-Vision-Instruct \
+  -a image.jpg "Describe this image in detail"
+
+# Multiple images
+llm -m hf/meta-llama/Llama-3.2-11B-Vision-Instruct \
+  -a photo1.png -a photo2.jpg "Compare these two images"
 ```
 
-### Images, audio and video
+Supported image formats:
+- PNG (image/png)
+- JPEG (image/jpeg)
+- WebP (image/webp)
+- GIF (image/gif)
 
-Gemini models are multi-modal. You can provide images, audio or video files as input like this:
+### Interactive Chat
+
+Start an interactive chat session:
+```bash
+llm chat -m hf/meta-llama/Llama-3.2-3B-Instruct
+```
+
+### Conversation History
+
+Continue previous conversations:
+```bash
+llm -m hf/meta-llama/Llama-3.2-3B-Instruct "What is Python?" -c
+llm -c "What are its main uses?"
+```
+
+## Advanced Options
+
+### Token Limits
+
+Control the maximum number of tokens in the response using the `max_tokens` parameter:
 
 ```bash
-llm -m gemini-2.0-flash 'extract text' -a image.jpg
-```
-Or with a URL:
-```bash
-llm -m gemini-2.0-flash-lite 'describe image' \
-  -a https://static.simonwillison.net/static/2024/pelicans.jpg
-```
-Audio works too:
-
-```bash
-llm -m gemini-2.0-flash 'transcribe audio' -a audio.mp3
+llm -m hf/meta-llama/Llama-3.2-3B-Instruct -o max_tokens 500 "Tell a story"
 ```
 
-And video:
+### Response Metadata
 
-```bash
-llm -m gemini-2.0-flash 'describe what happens' -a video.mp4
-```
-The Gemini prompting guide includes [extensive advice](https://ai.google.dev/gemini-api/docs/file-prompting-strategies) on multi-modal prompting.
-
-### JSON output
-
-Use `-o json_object 1` to force the output to be JSON:
-
-```bash
-llm -m gemini-2.0-flash -o json_object 1 \
-  '3 largest cities in California, list of {"name": "..."}'
-```
-Outputs:
-```json
-{"cities": [{"name": "Los Angeles"}, {"name": "San Diego"}, {"name": "San Jose"}]}
-```
-
-### Code execution
-
-Gemini models can [write and execute code](https://ai.google.dev/gemini-api/docs/code-execution) - they can decide to write Python code, execute it in a secure sandbox and use the result as part of their response.
-
-To enable this feature, use `-o code_execution 1`:
-
-```bash
-llm -m gemini-2.0-flash -o code_execution 1 \
-'use python to calculate (factorial of 13) * 3'
-```
-### Google search
-
-Some Gemini models support [Grounding with Google Search](https://cloud.google.com/vertex-ai/generative-ai/docs/multimodal/ground-gemini#web-ground-gemini), where the model can run a Google search and use the results as part of answering a prompt.
-
-Using this feature may incur additional requirements in terms of how you use the results. Consult [Google's documentation](https://cloud.google.com/vertex-ai/generative-ai/docs/multimodal/ground-gemini#web-ground-gemini) for more details.
-
-To run a prompt with Google search enabled, use `-o google_search 1`:
-
-```bash
-llm -m gemini-2.0-flash -o google_search 1 \
-  'What happened in Ireland today?'
-```
-
-Use `llm logs -c --json` after running a prompt to see the full JSON response, which includes [additional information](https://github.com/simonw/llm-gemini/pull/29#issuecomment-2606201877) about grounded results.
-
-### Chat
-
-To chat interactively with the model, run `llm chat`:
-
-```bash
-llm chat -m gemini-2.0-flash
-```
-
-### Timeouts
-
-By default there is no `timeout` against the Gemini API. You can use the `timeout` option to protect against API requests that hang indefinitely.
-
-With the CLI tool that looks like this, to set a 1.5 second timeout:
-
-```bash
-llm -m gemini-2.5-flash-preview-05-20 'epic saga about mice' -o timeout 1.5
-```
-In the Python library timeouts are used like this:
+Access detailed response metadata using the Python API:
 ```python
-import httpx, llm
+import llm
 
-model = llm.get_model("gemini/gemini-2.5-flash-preview-05-20")
+model = llm.get_model("hf/meta-llama/Llama-3.2-3B-Instruct")
+response = model.prompt("Hello")
 
-try:
-    response = model.prompt(
-        "epic saga about mice", timeout=1.5
-    )
+# Access metadata
+print(response.response_json)
+# {'usage': {...}, 'model': '...', 'finish_reason': 'stop', ...}
+```
+
+## Python API
+
+Use the plugin programmatically with both sync and async support:
+
+### Synchronous API
+
+```python
+import llm
+
+# Get a model
+model = llm.get_model("hf/meta-llama/Llama-3.2-3B-Instruct")
+
+# Simple prompt
+response = model.prompt("Explain machine learning")
+print(response.text())
+
+# With options
+response = model.prompt(
+    "Write a poem",
+    temperature=0.9,
+    max_tokens=200
+)
+
+# Streaming
+for chunk in model.prompt("Tell me a story", stream=True):
+    print(chunk, end="", flush=True)
+
+# With system prompt
+response = model.prompt(
+    "Translate to French: Hello",
+    system="You are a helpful translation assistant."
+)
+```
+
+### Asynchronous API
+
+```python
+import asyncio
+import llm
+
+async def main():
+    # Get an async model
+    model = llm.get_async_model("hf/meta-llama/Llama-3.2-3B-Instruct")
+    
+    # Async prompt
+    response = await model.prompt("Explain quantum computing")
     print(response.text())
-except httpx.TimeoutException:
-    print("Timeout exceeded")
-```
-An `httpx.TimeoutException` subclass will be raised if the timeout is exceeded.
+    
+    # Async streaming
+    async for chunk in model.prompt("Write a story", stream=True):
+        print(chunk, end="", flush=True)
 
-## Embeddings
-
-The plugin also adds support for the `gemini-embedding-exp-03-07` and `text-embedding-004` embedding models.
-
-Run that against a single string like this:
-```bash
-llm embed -m text-embedding-004 -c 'hello world'
-```
-This returns a JSON array of 768 numbers.
-
-The `gemini-embedding-exp-03-07` model is larger, returning 3072 numbers. You can also use variants of it that are truncated down to smaller sizes:
-
-- `gemini-embedding-exp-03-07` - 3072 numbers
-- `gemini-embedding-exp-03-07-2048` - 2048 numbers
-- `gemini-embedding-exp-03-07-1024` - 1024 numbers
-- `gemini-embedding-exp-03-07-512` - 512 numbers
-- `gemini-embedding-exp-03-07-256` - 256 numbers
-- `gemini-embedding-exp-03-07-128` - 128 numbers
-
-This command will embed every `README.md` file in child directories of the current directory and store the results in a SQLite database called `embed.db` in a collection called `readmes`:
-
-```bash
-llm embed-multi readmes -d embed.db -m gemini-embedding-exp-03-07-128 \
-  --files . '*/README.md'
-```
-You can then run similarity searches against that collection like this:
-```bash
-llm similar readmes -c 'upload csvs to stuff' -d embed.db
+asyncio.run(main())
 ```
 
-See the [LLM embeddings documentation](https://llm.datasette.io/en/stable/embeddings/cli.html) for further details.
+### Multimodal API
 
-## Listing all Gemini API models
+```python
+import llm
 
-The `llm gemini models` command lists all of the models that are exposed by the Gemini API, some of which may not be available through this plugin.
+# Get a vision model
+model = llm.get_model("hf/meta-llama/Llama-3.2-11B-Vision-Instruct")
 
-```bash
-llm gemini models
+# Analyze an image
+response = model.prompt(
+    "What's in this image?",
+    attachments=[llm.Attachment(path="photo.jpg")]
+)
+print(response.text())
 ```
-You can add a `--key X` option to use a different API key.
 
-To filter models by their supported generation methods use `--method` one or more times:
-```bash
-llm gemini models --method embedContent
-```
-If you provide multiple methods you will see models that support any of them.
+## Model Discovery
+
+The plugin automatically discovers models from Hugging Face that support:
+- `text-generation` task - for standard text models
+- `image-text-to-text` task - for multimodal vision models
+
+Models are registered with the `hf/` prefix to distinguish them from other LLM providers. The discovery process is cached to improve performance.
+
+## Performance & Caching
+
+The plugin implements intelligent caching to avoid repeated API calls to Hugging Face:
+
+### Cache Configuration
+
+- **Default cache duration**: 7 days
+- **Cache location**: `~/.llm/llm-huggingface/`
+- **Cached data**: Lists of available models by task type
+
+### Environment Variables
+
+- `LLM_HUGGINGFACE_CACHE_EXPIRY`: Set cache expiry in seconds (default: 604800 = 7 days)
+  ```bash
+  export LLM_HUGGINGFACE_CACHE_EXPIRY=86400  # 1 day
+  ```
+
+- `LLM_HUGGINGFACE_FORCE_REFRESH`: Force refresh of cached model lists
+  ```bash
+  export LLM_HUGGINGFACE_FORCE_REFRESH=true
+  llm models -q hf/  # Will fetch fresh model list from Hugging Face
+  ```
+
+The caching system provides approximately 2000x speedup for model discovery after the initial fetch.
+
+## Limitations
+
+- **Attachments**: Only image attachments are supported for multimodal models. Audio and other file types are not currently supported
+- **Model availability**: Not all Hugging Face models may be accessible via the Inference API
+- **Rate limits**: Subject to Hugging Face API rate limits based on your account type
+- **Multimodal models**: Only models that support the `image-text-to-text` task can process image attachments
 
 ## Development
 
 To set up this plugin locally, first checkout the code. Then create a new virtual environment:
 ```bash
-cd llm-gemini
+cd llm-huggingface
 python3 -m venv venv
 source venv/bin/activate
 ```
+
 Now install the dependencies and test dependencies:
 ```bash
-llm install -e '.[test]'
+pip install -e '.[test]'
 ```
+
 To run the tests:
 ```bash
 pytest
 ```
 
-This project uses [pytest-recording](https://github.com/kiwicom/pytest-recording) to record Gemini API responses for the tests.
+## License
 
-If you add a new test that calls the API you can capture the API response like this:
-```bash
-PYTEST_GEMINI_API_KEY="$(llm keys get gemini)" pytest --record-mode once
-```
-You will need to have stored a valid Gemini API key using this command first:
-```bash
-llm keys set gemini
-# Paste key here
-```
+Apache 2.0
