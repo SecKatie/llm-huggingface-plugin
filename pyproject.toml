@@ -14,10 +14,10 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/SecKatie/llm-huggingface"
-Changelog = "https://github.com/SecKatie/llm-huggingface/releases"
-Issues = "https://github.com/SecKatie/llm-huggingface/issues"
-CI = "https://github.com/SecKatie/llm-huggingface/actions"
+Homepage = "https://github.com/SecKatie/llm-huggingface-plugin"
+Changelog = "https://github.com/SecKatie/llm-huggingface-plugin/releases"
+Issues = "https://github.com/SecKatie/llm-huggingface-plugin/issues"
+CI = "https://github.com/SecKatie/llm-huggingface-plugin/actions"
 
 [project.entry-points.llm]
 huggingface = "llm_huggingface_plugin"

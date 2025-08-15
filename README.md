@@ -1,8 +1,8 @@
 # llm-huggingface
 
 [![PyPI - Version](https://img.shields.io/pypi/v/llm-huggingface-plugin)](https://pypi.org/project/llm-huggingface-plugin/)
-[![GitHub Release](https://img.shields.io/github/v/release/SecKatie/llm-huggingface-plugin)](https://github.com/SecKatie/llm-huggingface/releases)
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/SecKatie/llm-huggingface/blob/main/LICENSE)
+[![GitHub Release](https://img.shields.io/github/v/release/SecKatie/llm-huggingface-plugin)](https://github.com/SecKatie/llm-huggingface-plugin/releases)
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue.svg)](https://github.com/SecKatie/llm-huggingface-plugin/blob/main/LICENSE)
 
 Access Hugging Face models via the Inference API
 
