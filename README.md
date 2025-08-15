@@ -10,7 +10,7 @@ Access Hugging Face models via the Inference API
 
 Install this plugin in the same environment as [LLM](https://llm.datasette.io/).
 ```bash
-llm install llm-huggingface
+llm install llm-huggingface-plugin
 ```
 
 ## Configuration
